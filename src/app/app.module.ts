@@ -6,6 +6,8 @@ import { HeaderComponent } from './navigation/header/header.component';
 import { HttpClientModule } from '@angular/common/http';
 import { QuoteComponent } from './components/quote/quote.component';
 import { ChartsModule } from 'ng2-charts';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ClarityModule } from "@clr/angular";
 
 
 @NgModule({
@@ -15,7 +17,7 @@ import { ChartsModule } from 'ng2-charts';
     QuoteComponent,
   ],
   imports: [
-    BrowserModule, HttpClientModule, ChartsModule
+    BrowserModule, HttpClientModule, ChartsModule, BrowserAnimationsModule, ClarityModule
   ],
   providers: [ ApiService,  ],
   bootstrap: [AppComponent]
