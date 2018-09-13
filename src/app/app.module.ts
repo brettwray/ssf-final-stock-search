@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { QuoteComponent } from './components/quote/quote.component';
 import { ChartsModule } from 'ng2-charts';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ClarityModule } from "@clr/angular";
+import { ClarityModule, ClrFormsNextModule } from "@clr/angular";
 
 
 @NgModule({
@@ -17,7 +17,7 @@ import { ClarityModule } from "@clr/angular";
     QuoteComponent,
   ],
   imports: [
-    BrowserModule, HttpClientModule, ChartsModule, BrowserAnimationsModule, ClarityModule
+    BrowserModule, HttpClientModule, ChartsModule, BrowserAnimationsModule, ClarityModule, ClrFormsNextModule
   ],
   providers: [ ApiService,  ],
   bootstrap: [AppComponent]
