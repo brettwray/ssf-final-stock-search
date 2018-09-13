@@ -20,6 +20,8 @@ export class AppComponent {
     perf_indicator = [
         "1. open",
         "2. high",
+        "3. low",
+        "4. close"
     ]
     performance= [
             ];
@@ -31,7 +33,7 @@ export class AppComponent {
         this._api.getData(this.symbol)
             .subscribe((data:any) =>{
                 console.log(data)
-                this.open = data["Time Series (Daily)"][this.date]["1. open"]
+                this.open = data["Time Series (Daily)"][this.date][perf_indicator[1]]
                 console.log(this.open)
                 // for (let i: number = 0; i < this.dates.length; i++) {
                 //
