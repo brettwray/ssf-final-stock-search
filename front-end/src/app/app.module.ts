@@ -12,7 +12,7 @@ import { LoginComponent } from './components/login/login.component';
 import { UserService } from './services/user.service';
 import { routes } from './app.router';
 import { HomeComponent } from './components/home/home.component';
-
+import { ChartsService} from './services/charts.service';
 
 
 @NgModule({
@@ -27,7 +27,7 @@ import { HomeComponent } from './components/home/home.component';
   imports: [
     BrowserModule, HttpClientModule, ChartsModule, BrowserAnimationsModule, ClarityModule, ClrFormsNextModule, routes
   ],
-  providers: [ ApiService, UserService  ],
+  providers: [ ApiService, UserService, ChartsService  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

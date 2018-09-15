@@ -7,7 +7,7 @@ import { LoginComponent } from './components/login/login.component';
 
 
 export const router: Routes = [
-    { path: '', redirectTo: 'app-home', pathMatch: 'full' },
+    { path: '', redirectTo: 'app-root', pathMatch: 'full' },
     { path: 'authorized', component: AppComponent },
     { path: 'quote', component: QuoteComponent },
     { path: 'login', component: LoginComponent }
