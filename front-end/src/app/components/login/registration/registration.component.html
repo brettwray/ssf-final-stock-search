@@ -1,0 +1,16 @@
+<form  class="form" [formGroup]="userRegistration" novalidate (ngSubmit) = "onRegister()">
+  <section class="form-block">
+    <label>Registration Form</label>
+    <div class="form-group">
+      <label for="firstName">First Name</label>
+      <input id="firstName" type="text" clrInput formControlName="firstName"/>
+      <label for="lastName">Last Name</label>
+      <input id="lastName" type="text" clrInput formControlName="lastName"/>
+      <label for="email">Email Address</label>
+      <input id="email" type="email" clrInput formControlName="email"/>
+      <label for="password">Password</label>
+      <input id="password" type="password" clrInput formControlName="password"/>
+      <button (click)="onSubmit()" type="submit"> Register For App </button>
+    </div>
+  </section>
+</form>

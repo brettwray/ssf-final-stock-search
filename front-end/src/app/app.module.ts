@@ -17,6 +17,7 @@ import { DatePickerComponent } from './components/date-picker/date-picker.compon
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import {DatePusherService} from './services/date-pusher.service';
+import { RegistrationComponent } from './components/login/registration/registration.component';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import {DatePusherService} from './services/date-pusher.service';
     LoginComponent,
     HomeComponent,
     DatePickerComponent,
+    RegistrationComponent,
 
     
   ],
