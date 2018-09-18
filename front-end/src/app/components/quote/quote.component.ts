@@ -1,6 +1,9 @@
-import { Component, OnInit} from '@angular/core';
+import {Component, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {ApiService} from '../../services/api.service';
 import { Chart } from 'chart.js'
+import {FormControl, FormGroup} from '@angular/forms';
+import * as moment from 'moment';
+import {formatDate} from '@angular/common';
 
 
 @Component({
@@ -8,12 +11,20 @@ import { Chart } from 'chart.js'
     templateUrl: './quote.component.html',
     styleUrls: ['./quote.component.css']
 })
-export class QuoteComponent implements OnInit {
+export class QuoteComponent implements OnInit, OnChanges {
+    _fromDate;
+    _toDate;
+    datesBetween = []
+    dataDates = []
+    dateForm = new FormGroup({
+        fromDate: new FormControl(''),
+        toDate: new FormControl ('')
+    });
 
-    dates = [
-        '2018-09-11',
-        '2018-09-10',
-        '2018-09-07',
+    _chart:HTMLElement;
+    fromDate:string;
+    toDate: string;
+    dates = [ '2018-09-11', '2018-09-12'
     ];
     time_series = [
         'Time Series (Daily)'
@@ -32,17 +43,47 @@ export class QuoteComponent implements OnInit {
 
     public lineChartData:Array<any> = [{data: [], label: []}];
 
+    getDatesBetween(startDate, endDate) {
+        let testArray = []
+        let beginDate = moment(startDate);
+        let endingDate = moment(endDate);
+        while (beginDate <= endingDate) {
+                this.datesBetween.push(moment(beginDate).format('YYYY-MM-DD'))
+                beginDate = moment(beginDate).add(1, 'days');
+        }
+        console.log('dates',this.dates)
+        console.log('dates between', this.datesBetween)
+    }
+    onSearch() {
+        this._fromDate = formatDate(this.dateForm.controls['fromDate'].value,  'yyyy-MM-dd','en')
+        this._toDate =  formatDate(this.dateForm.controls['toDate'].value,  'yyyy-MM-dd','en')
+        this.getDatesBetween(this._fromDate, this._toDate)
+        for (let d = 0; d <= this.datesBetween.length; d++ ) {
+            if(this.dataDates.includes(this.datesBetween[d])) {
+                this.dates.push(this.datesBetween[d])
+            }
+        }
+        console.log('dates work', this._fromDate, this._toDate)
+    }
     constructor(private _api: ApiService) {
+
+//TODO: The dates are added to the labels when Randomize is used. Take the dates between array and run each date through the API call to create a new array that's the exact same
+        //ToDo: stucture as the current line chart data array. Then with onSearch() replace the old array with the new array.
+
+
+
         this._api.getData()
             .subscribe(res => {
                 //Gets All Dates Available From API Return
-                let resDates = []
+                this.dataDates  = []
+
                 for (let i:number =0; i<= this.dates.length; i++) {
                     for (var _dates in res[this.time_series[0]]) {
                         if (res[this.time_series[0]].hasOwnProperty(this.dates[i])){
-                            resDates.push(_dates)
+                            this.dataDates.push(_dates)
                         }
                     }
+                    console.log('Test Data Dates',this.dataDates)
                 }
                 //Adds API data to object for the specific data
                 for (let i: number = 0; i < this.dates.length; i++) {
@@ -77,18 +118,13 @@ export class QuoteComponent implements OnInit {
     }
     //Draws data when view is initialized
     ngOnInit(){
+        this._chart = document.getElementById('stockChart') as HTMLElement;
         this.lineChartData = [
             { data:[this.openPrice.data], label: 'Opening Price'},
             { data: [this.highPrice.data], label: 'High Price'},
             { data: [this.lowPrice.data], label: 'High Price'},
             { data: [this.closePrice.data], label: 'High Price'},
         ]
-
-        // this.lineChartData[0]["data"]= this.openPrice.data
-        // this.lineChartData[1]["data"]= this.highPrice.data
-        // this.lineChartData[2]["data"]= this.lowPrice.data
-        // this.lineChartData[3]["data"]= this.closePrice.data
-
     }
 
     // lineChart
@@ -147,7 +183,12 @@ export class QuoteComponent implements OnInit {
         console.log(e);
     }
 
+ngOnChanges() {
 
+    console.log('testing',this.dates)
+
+
+}
 }
 
 

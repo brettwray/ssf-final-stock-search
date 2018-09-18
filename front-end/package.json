@@ -23,9 +23,11 @@
     "@clr/angular": "^0.13.0",
     "@clr/icons": "^0.13.0",
     "@clr/ui": "^0.13.0",
+    "@types/moment": "^2.13.0",
     "@webcomponents/custom-elements": "^1.2.0",
     "chart.js": "^2.7.2",
     "core-js": "^2.5.4",
+    "moment": "^2.22.2",
     "ng2-charts": "^1.6.0",
     "rxjs": "~6.2.0",
     "zone.js": "~0.8.26"

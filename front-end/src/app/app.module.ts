@@ -13,6 +13,10 @@ import { UserService } from './services/user.service';
 import { routes } from './app.router';
 import { HomeComponent } from './components/home/home.component';
 import { ChartsService} from './services/charts.service';
+import { DatePickerComponent } from './components/date-picker/date-picker.component';
+import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import {DatePusherService} from './services/date-pusher.service';
 
 
 @NgModule({
@@ -22,12 +26,14 @@ import { ChartsService} from './services/charts.service';
     QuoteComponent,
     LoginComponent,
     HomeComponent,
+    DatePickerComponent,
+
     
   ],
   imports: [
-    BrowserModule, HttpClientModule, ChartsModule, BrowserAnimationsModule, ClarityModule, ClrFormsNextModule, routes
+    BrowserModule, HttpClientModule, ChartsModule, BrowserAnimationsModule, ClarityModule, ClrFormsNextModule, routes, FormsModule, ReactiveFormsModule
   ],
-  providers: [ ApiService, UserService, ChartsService  ],
+  providers: [ ApiService, UserService, ChartsService, DatePusherService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
