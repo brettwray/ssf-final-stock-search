@@ -11,7 +11,7 @@ import {formatDate} from '@angular/common';
     templateUrl: './quote.component.html',
     styleUrls: ['./quote.component.css']
 })
-export class QuoteComponent implements OnInit, OnChanges {
+export class QuoteComponent implements OnInit {
     _fromDate;
     _toDate;
     datesBetween = []
@@ -24,8 +24,7 @@ export class QuoteComponent implements OnInit, OnChanges {
     _chart:HTMLElement;
     fromDate:string;
     toDate: string;
-    dates = [ '2018-09-11', '2018-09-12'
-    ];
+    dates = [];
     time_series = [
         'Time Series (Daily)'
     ];
@@ -35,78 +34,11 @@ export class QuoteComponent implements OnInit, OnChanges {
         '3. low',
         '4. close'
     ];
-
+    apiData;
     openPrice = {data: [], label: []};
     highPrice = {data: [], label: []};
     lowPrice = {data: [], label: []};
     closePrice = {data: [], label: []};
-
-
-    public lineChartData:Array<any> = [{data: [], label: []}];
-    public userLineChartDate:Array<any> = [{data: [], label:[]}];
-
-
-    constructor(private _api: ApiService) {
-
-//TODO: The dates are added to the labels when Randomize is used. Take the dates between array and run each date through the API call to create a new array that's the exact same
-        //ToDo: stucture as the current line chart data array. Then with onSearch() replace the old array with the new array.
-
-
-
-        this._api.getData()
-            .subscribe(res => {
-                //Gets All Dates Available From API Return
-
-                this.dataDates  = []
-
-                for (let i:number =0; i<= this.dates.length; i++) {
-                    for (var _dates in res[this.time_series[0]]) {
-                        if (res[this.time_series[0]].hasOwnProperty(this.dates[i])){
-                            this.dataDates.push(_dates)
-                        }
-                    }
-                }
-                //Initializes the Line Chart Data
-                this.lineChartData = [
-                    { data: [], label:[]},
-                    { data: [], label:[]},
-                    { data: [], label:[]},
-                    { data: [], label:[]}
-
-                ];
-                //Adds API data to object for the specific data
-                for (let i: number = 0; i < this.dates.length; i++) {
-                    this.openPrice.data.push(res[this.time_series[0]][this.dates[i]][this.perf_indicator[0]]);
-                    this.lineChartData[0]["data"].push(this.openPrice.data[i]);
-                    this.highPrice.data.push(res[this.time_series[0]][this.dates[i]][this.perf_indicator[1]]);
-                    this.lineChartData[1]["data"].push(this.highPrice.data[i]);
-                    this.lowPrice.data.push(res[this.time_series[0]][this.dates[i]][this.perf_indicator[2]]);
-                    this.lineChartData[2]["data"].push(this.lowPrice.data[i])
-                    this.closePrice.data.push(res[this.time_series[0]][this.dates[i]][this.perf_indicator[3]]);
-                    this.lineChartData[3]["data"].push(this.closePrice.data[i])
-                }
-                this.lineChartData[0]["label"] = 'Open Price'
-                this.lineChartData[1]["label"] = 'High Of Day'
-                this.lineChartData[2]["label"] = 'Low of Day'
-                this.lineChartData[3]["label"] = 'Closing Price'
-
-            });
-
-    }
-
-    //Performed when the search button is clicked
-    onSearch() {
-        this._fromDate = formatDate(this.dateForm.controls['fromDate'].value,  'yyyy-MM-dd','en')
-        this._toDate =  formatDate(this.dateForm.controls['toDate'].value,  'yyyy-MM-dd','en')
-        this.getDatesBetween(this._fromDate, this._toDate)
-        for (let d = 0; d <= this.datesBetween.length; d++ ) {
-            if(this.dataDates.includes(this.datesBetween[d])) {
-                this.dates.push(this.datesBetween[d])
-            }
-        }
-
-
-        }
 
     //Gets all of the dates between the two dates the user inputs
     getDatesBetween(startDate, endDate) {
@@ -120,20 +52,92 @@ export class QuoteComponent implements OnInit, OnChanges {
 
         console.log('dates between', this.datesBetween)
     }
-    //Draws data when view is initialized
-    ngOnInit(){
-        this._chart = document.getElementById('stockChart') as HTMLElement;
+
+
+    public lineChartData:Array<any> = [{data: [], label: []}];
+
+
+    constructor(private _api: ApiService) {
+
+//TODO: The dates are added to the labels when Randomize is used. Take the dates between array and run each date through the API call to create a new array that's the exact same
+        //ToDo: stucture as the current line chart data array. Then with onSearch() replace the old array with the new array.
+        this._api.getData()
+            .subscribe(res => {
+
+                 this.apiData = res["Time Series (Daily)"]
+                //Gets All Dates Available From API Return
+                this.dataDates  = []
+
+                for (let i:number =0; i<= this.datesBetween.length; i++) {
+                    for (var _dates in res[this.time_series[0]]) {
+                        if (res[this.time_series[0]].hasOwnProperty(this.datesBetween[i])){
+                            this.dataDates.push(_dates)
+                        }
+                    }
+                }
+
+            });
+
+    }
+    buildChart() {
+        //Initializes the Line Chart Data
+        this.lineChartData = [
+            { data: [], label:[]},
+            { data: [], label:[]},
+            { data: [], label:[]},
+            { data: [], label:[]}
+
+        ];
+        //Adds API data to object for the specific data
+        for (let i: number = 0; i < this.datesBetween.length; i++) {
+            this.openPrice.data.push(this.apiData[this.datesBetween[i]][this.perf_indicator[0]]);
+            this.highPrice.data.push(this.apiData[this.datesBetween[i]][this.perf_indicator[1]]);
+            this.lowPrice.data.push(this.apiData[this.datesBetween[i]][this.perf_indicator[2]]);
+            this.closePrice.data.push(this.apiData[this.datesBetween[i]][this.perf_indicator[3]]);
+
+        }
+        for (let p: number = 0; p <= this.openPrice.data.length; p++) {
+            this.lineChartData[0]["data"].push(this.openPrice.data[p]),
+                this.lineChartData[1]["data"].push(this.highPrice.data[p]),
+                this.lineChartData[2]["data"].push(this.lowPrice.data[p]),
+                this.lineChartData[3]["data"].push(this.closePrice.data[p])
+
+        }
+        this.lineChartData[0]["label"] = 'Open Price'
+        this.lineChartData[1]["label"] = 'High Of Day'
+        this.lineChartData[2]["label"] = 'Low of Day'
+        this.lineChartData[3]["label"] = 'Closing Price'
+    }
+
+
+    //Performed when the search button is clicked
+    onSearch() {
+        this._fromDate = formatDate(this.dateForm.controls['fromDate'].value,  'yyyy-MM-dd','en')
+        this._toDate =  formatDate(this.dateForm.controls['toDate'].value,  'yyyy-MM-dd','en')
+        this.getDatesBetween(this._fromDate, this._toDate)
+        for (let d = 0; d <= this.datesBetween.length; d++ ) {
+            if(this.dataDates.includes(this.datesBetween[d])) {
+                this.dates.push(this.datesBetween[d])
+            }
+        }
         this.lineChartData = [
             { data:[this.openPrice.data], label: 'Opening Price'},
             { data: [this.highPrice.data], label: 'High Price'},
             { data: [this.lowPrice.data], label: 'Low Price'},
             { data: [this.closePrice.data], label: 'Close Price'},
         ]
+        this.buildChart()
+
+        }
+
+    //Draws data when view is initialized
+    ngOnInit(){
+
 
     }
 
     // lineChart
-    public lineChartLabels:Array<any> = this.dates;
+    public lineChartLabels:Array<any> = this.datesBetween;
     //public lineChartData:Array<any> = [{data: [2,4,5], label: 'open'}];
     public lineChartOptions:any = {
         responsive: true
@@ -188,12 +192,6 @@ export class QuoteComponent implements OnInit, OnChanges {
         console.log(e);
     }
 
-ngOnChanges() {
-
-    console.log('testing',this.dates)
-
-
-}
 }
 
 
