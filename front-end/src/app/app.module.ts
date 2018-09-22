@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import {DatePusherService} from './services/date-pusher.service';
 import { RegistrationComponent } from './components/login/registration/registration.component';
+import { SearchBarComponent } from './components/search-bar/search-bar.component';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import { RegistrationComponent } from './components/login/registration/registrat
     HomeComponent,
     DatePickerComponent,
     RegistrationComponent,
+    SearchBarComponent,
 
     
   ],
