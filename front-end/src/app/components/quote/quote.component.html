@@ -1,6 +1,8 @@
 <form class="form" [formGroup]="dateForm" novalidate (ngSubmit) = "onSearch()">
   <section class="form-block">
     <div class="form-group">
+      <label for="symbolControl">Symbol</label>
+      <input id="symbolControl" type="text" clrInput formControlName="stockSymbol">
       <label for="fromDateControl">From Date</label>
       <input id="fromDateControl" type="date" clrDate formControlName="fromDate"/>
       <label for="toDateControl">To Date</label>

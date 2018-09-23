@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +21,6 @@ export class ApiService {
         '3. low',
         '4. close'
     ];
-    symbol: string = 'MSFT';
-    openPrice = {data: [], label: []};
-    highPrice = {data: [], label: []};
-    lowPrice = {data: [], label: []};
-    closePrice = {data: [], label: []};
 
   constructor(private http: HttpClient) { }
 
@@ -33,8 +28,8 @@ export class ApiService {
   apiKey: string ='&apikey=TWXDHYMSVVSHXGI1'
   apiTimePeriod = 'Time_Series_Daily'
 
-  getData() {
-      return this.http.get(this.BaseUrl + this.apiTimePeriod + '&symbol=' + this.symbol + this.apiKey);
+  getData(symbol) {
+      return this.http.get(this.BaseUrl + this.apiTimePeriod + '&symbol=' + symbol + this.apiKey);
 
   }
   }

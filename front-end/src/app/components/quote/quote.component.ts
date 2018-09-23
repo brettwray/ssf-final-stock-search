@@ -17,13 +17,11 @@ export class QuoteComponent implements OnInit {
     datesBetween = []
     dataDates = []
     dateForm = new FormGroup({
+        stockSymbol: new FormControl(''),
         fromDate: new FormControl(''),
         toDate: new FormControl ('')
     });
 
-    _chart:HTMLElement;
-    fromDate:string;
-    toDate: string;
     dates = [];
     time_series = [
         'Time Series (Daily)'
@@ -35,10 +33,34 @@ export class QuoteComponent implements OnInit {
         '4. close'
     ];
     apiData;
+    rawData;
     openPrice = {data: [], label: []};
     highPrice = {data: [], label: []};
     lowPrice = {data: [], label: []};
     closePrice = {data: [], label: []};
+
+    public lineChartData:Array<any> = [{data: [], label: []}];
+    constructor(private _api: ApiService) {}
+    callApi(){
+        this._api.getData(this.dateForm.controls['stockSymbol'].value)
+            .subscribe(res => {
+
+                this.apiData = res["Time Series (Daily)"];
+                this.rawData = res;
+                //Gets All Dates Available From API Return
+                this.dataDates  = [];
+
+                for (let i:number =0; i<= this.datesBetween.length; i++) {
+                    for (var _dates in res[this.time_series[0]]) {
+                        if (this.rawData.hasOwnProperty(this.datesBetween[i])){
+                            this.dataDates.push(_dates)
+                        }
+                    }
+                }
+
+            });
+        console.log('This Ran', this.dateForm.controls['stockSymbol'].value )
+    }
 
     //Gets all of the dates between the two dates the user inputs
     getDatesBetween(startDate, endDate) {
@@ -52,34 +74,8 @@ export class QuoteComponent implements OnInit {
 
         console.log('dates between', this.datesBetween)
     }
-
-
-    public lineChartData:Array<any> = [{data: [], label: []}];
-
-
-    constructor(private _api: ApiService) {
-
-//TODO: The dates are added to the labels when Randomize is used. Take the dates between array and run each date through the API call to create a new array that's the exact same
-        //ToDo: stucture as the current line chart data array. Then with onSearch() replace the old array with the new array.
-        this._api.getData()
-            .subscribe(res => {
-
-                 this.apiData = res["Time Series (Daily)"]
-                //Gets All Dates Available From API Return
-                this.dataDates  = []
-
-                for (let i:number =0; i<= this.datesBetween.length; i++) {
-                    for (var _dates in res[this.time_series[0]]) {
-                        if (res[this.time_series[0]].hasOwnProperty(this.datesBetween[i])){
-                            this.dataDates.push(_dates)
-                        }
-                    }
-                }
-
-            });
-
-    }
     buildChart() {
+
         //Initializes the Line Chart Data
         this.lineChartData = [
             { data: [], label:[]},
@@ -112,6 +108,7 @@ export class QuoteComponent implements OnInit {
 
     //Performed when the search button is clicked
     onSearch() {
+        this.callApi()
         this._fromDate = formatDate(this.dateForm.controls['fromDate'].value,  'yyyy-MM-dd','en')
         this._toDate =  formatDate(this.dateForm.controls['toDate'].value,  'yyyy-MM-dd','en')
         this.getDatesBetween(this._fromDate, this._toDate)
@@ -119,18 +116,22 @@ export class QuoteComponent implements OnInit {
             if(this.dataDates.includes(this.datesBetween[d])) {
                 this.dates.push(this.datesBetween[d])
             }
+            console.log('data dates', this.dataDates, 'dates between', this.datesBetween, 'dates', this.dates)
         }
+
         this.lineChartData = [
             { data:[this.openPrice.data], label: 'Opening Price'},
             { data: [this.highPrice.data], label: 'High Price'},
             { data: [this.lowPrice.data], label: 'Low Price'},
             { data: [this.closePrice.data], label: 'Close Price'},
         ]
+        console.log(this.highPrice.data)
+        console.log(this.rawData)
         this.buildChart()
 
         }
 
-    //Draws data when view is initialized
+
     ngOnInit(){
 
 
