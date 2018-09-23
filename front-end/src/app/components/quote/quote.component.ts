@@ -34,12 +34,14 @@ export class QuoteComponent implements OnInit {
     ];
     apiData;
     rawData;
+    metaData;
     openPrice = {data: [], label: []};
     highPrice = {data: [], label: []};
     lowPrice = {data: [], label: []};
     closePrice = {data: [], label: []};
 
     public lineChartData:Array<any> = [{data: [], label: []}];
+
     constructor(private _api: ApiService) {}
     callApi(){
         this._api.getData(this.dateForm.controls['stockSymbol'].value)
@@ -47,6 +49,7 @@ export class QuoteComponent implements OnInit {
 
                 this.apiData = res["Time Series (Daily)"];
                 this.rawData = res;
+                this.metaData = res["Meta Data"]
                 //Gets All Dates Available From API Return
                 this.dataDates  = [];
 
@@ -59,7 +62,13 @@ export class QuoteComponent implements OnInit {
                 }
 
             });
-        console.log('This Ran', this.dateForm.controls['stockSymbol'].value )
+
+            setTimeout(() =>{
+                console.log('this ran')
+                this.prepChart()
+
+            }, 1000)
+
     }
 
     //Gets all of the dates between the two dates the user inputs
@@ -72,18 +81,13 @@ export class QuoteComponent implements OnInit {
             beginDate = moment(beginDate).add(1, 'days');
         }
 
-        console.log('dates between', this.datesBetween)
+
     }
-    buildChart() {
+
+    prepChart() {
 
         //Initializes the Line Chart Data
-        this.lineChartData = [
-            { data: [], label:[]},
-            { data: [], label:[]},
-            { data: [], label:[]},
-            { data: [], label:[]}
 
-        ];
         //Adds API data to object for the specific data
         for (let i: number = 0; i < this.datesBetween.length; i++) {
             this.openPrice.data.push(this.apiData[this.datesBetween[i]][this.perf_indicator[0]]);
@@ -92,23 +96,34 @@ export class QuoteComponent implements OnInit {
             this.closePrice.data.push(this.apiData[this.datesBetween[i]][this.perf_indicator[3]]);
 
         }
-        for (let p: number = 0; p <= this.openPrice.data.length; p++) {
-            this.lineChartData[0]["data"].push(this.openPrice.data[p]),
-                this.lineChartData[1]["data"].push(this.highPrice.data[p]),
-                this.lineChartData[2]["data"].push(this.lowPrice.data[p]),
-                this.lineChartData[3]["data"].push(this.closePrice.data[p])
+        this.buildChart()
+    }
+    buildChart() {
+        this.lineChartData = [
+            { data: [], label:[]},
+            { data: [], label:[]},
+            { data: [], label:[]},
+            { data: [], label:[]}
 
+        ];
+        for (let p: number = 0; p < this.openPrice.data.length; p++) {
+            this.lineChartData[0]["data"].push(this.openPrice.data[p])
+            this.lineChartData[1]["data"].push(this.highPrice.data[p]),
+            this.lineChartData[2]["data"].push(this.lowPrice.data[p]),
+            this.lineChartData[3]["data"].push(this.closePrice.data[p])
         }
+
         this.lineChartData[0]["label"] = 'Open Price'
         this.lineChartData[1]["label"] = 'High Of Day'
         this.lineChartData[2]["label"] = 'Low of Day'
         this.lineChartData[3]["label"] = 'Closing Price'
-    }
+        }
 
 
     //Performed when the search button is clicked
     onSearch() {
-        this.callApi()
+
+        //Formats the date to the format used on the API
         this._fromDate = formatDate(this.dateForm.controls['fromDate'].value,  'yyyy-MM-dd','en')
         this._toDate =  formatDate(this.dateForm.controls['toDate'].value,  'yyyy-MM-dd','en')
         this.getDatesBetween(this._fromDate, this._toDate)
@@ -116,27 +131,34 @@ export class QuoteComponent implements OnInit {
             if(this.dataDates.includes(this.datesBetween[d])) {
                 this.dates.push(this.datesBetween[d])
             }
-            console.log('data dates', this.dataDates, 'dates between', this.datesBetween, 'dates', this.dates)
-        }
 
-        this.lineChartData = [
-            { data:[this.openPrice.data], label: 'Opening Price'},
-            { data: [this.highPrice.data], label: 'High Price'},
-            { data: [this.lowPrice.data], label: 'Low Price'},
-            { data: [this.closePrice.data], label: 'Close Price'},
-        ]
-        console.log(this.highPrice.data)
-        console.log(this.rawData)
-        this.buildChart()
+        }
+        this.callApi()
+        if (this.apiData) {
+            console.log('Has Data', this.apiData)
+        } else {
+            console.log('No Data')
+        }
 
         }
 
 
     ngOnInit(){
+        //Initializes Line Chart Data With No Data so the entire array is overwritten once the dates and symbol are entered
+        this.lineChartData = [
+            { data: [], label:[]},
+            { data: [], label:[]},
+            { data: [], label:[]},
+            { data: [], label:[]}
 
-
+        ];
+        if (this.apiData == true) {
+            console.log('Has Data', this.apiData)
+        } else {
+            console.log('No Data')
+        }
     }
-
+    // CODE BELOW IS USED FOR CHART STYLES
     // lineChart
     public lineChartLabels:Array<any> = this.datesBetween;
     //public lineChartData:Array<any> = [{data: [2,4,5], label: 'open'}];
@@ -172,17 +194,17 @@ export class QuoteComponent implements OnInit {
     ];
     public lineChartLegend:boolean = true;
     public lineChartType:string = 'line';
-
-    public randomize():void {
-        let _lineChartData:Array<any> = new Array(this.lineChartData.length);
-        for (let i = 0; i < this.lineChartData.length; i++) {
-            _lineChartData[i] = {data: new Array(this.lineChartData[i].data.length), label: this.lineChartData[i].label};
-            for (let j = 0; j < this.lineChartData[i].data.length; j++) {
-                _lineChartData[i].data[j] = Math.floor((Math.random() * 100) + 1);
-            }
-        }
-        this.lineChartData = _lineChartData;
-    }
+    //RANDOMIZE THE CHART
+    // public randomize():void {
+    //     let _lineChartData:Array<any> = new Array(this.lineChartData.length);
+    //     for (let i = 0; i < this.lineChartData.length; i++) {
+    //         _lineChartData[i] = {data: new Array(this.lineChartData[i].data.length), label: this.lineChartData[i].label};
+    //         for (let j = 0; j < this.lineChartData[i].data.length; j++) {
+    //             _lineChartData[i].data[j] = Math.floor((Math.random() * 100) + 1);
+    //         }
+    //     }
+    //     this.lineChartData = _lineChartData;
+    // }
 
     // events
     public chartClicked(e:any):void {
