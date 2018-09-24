@@ -4,6 +4,7 @@ import { Chart } from 'chart.js'
 import {FormControl, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
 import {formatDate} from '@angular/common';
+import {weekdaysShort} from 'moment';
 
 
 @Component({
@@ -21,7 +22,6 @@ export class QuoteComponent implements OnInit {
         fromDate: new FormControl(''),
         toDate: new FormControl ('')
     });
-
     dates = [];
     time_series = [
         'Time Series (Daily)'
@@ -41,12 +41,11 @@ export class QuoteComponent implements OnInit {
     closePrice = {data: [], label: []};
 
     public lineChartData:Array<any> = [{data: [], label: []}];
-
+    public lineChartLabels:Array<any> = []
     constructor(private _api: ApiService) {}
     callApi(){
         this._api.getData(this.dateForm.controls['stockSymbol'].value)
             .subscribe(res => {
-
                 this.apiData = res["Time Series (Daily)"];
                 this.rawData = res;
                 this.metaData = res["Meta Data"]
@@ -55,17 +54,18 @@ export class QuoteComponent implements OnInit {
 
                 for (let i:number =0; i<= this.datesBetween.length; i++) {
                     for (var _dates in res[this.time_series[0]]) {
-                        if (this.rawData.hasOwnProperty(this.datesBetween[i])){
+                        if (this.rawData["Time Series (Daily)"].hasOwnProperty(this.datesBetween[i])){
                             this.dataDates.push(_dates)
                         }
                     }
                 }
-
+            console.log('meta', this.metaData)
             });
 
             setTimeout(() =>{
                 console.log('this ran')
-                this.prepChart()
+
+                this.validDates()
 
             }, 1000)
 
@@ -80,21 +80,34 @@ export class QuoteComponent implements OnInit {
             this.datesBetween.push(moment(beginDate).format('YYYY-MM-DD'))
             beginDate = moment(beginDate).add(1, 'days');
         }
+    }
+    validDates() {
+        let matches = []
+        this.datesBetween.forEach((e1)=>this.dataDates.forEach((e2)=>
+        {if (e1 === e2){
+            matches.push(e1)
+            }
+        }
+        ));
+        let d = new Set(matches)
+        let f = d.values()
+        let r =  Array.from(f)
+        this.dates = r;
 
-
+        this.prepChart()
     }
 
     prepChart() {
-
-        //Initializes the Line Chart Data
-
+        console.log('dates',this.dates, 'dates between', this.datesBetween, 'data dates', this.dataDates)
         //Adds API data to object for the specific data
-        for (let i: number = 0; i < this.datesBetween.length; i++) {
-            this.openPrice.data.push(this.apiData[this.datesBetween[i]][this.perf_indicator[0]]);
-            this.highPrice.data.push(this.apiData[this.datesBetween[i]][this.perf_indicator[1]]);
-            this.lowPrice.data.push(this.apiData[this.datesBetween[i]][this.perf_indicator[2]]);
-            this.closePrice.data.push(this.apiData[this.datesBetween[i]][this.perf_indicator[3]]);
-
+        for (let i: number = 0; i < this.dates.length; i++) {
+            this.openPrice.data.push(this.apiData[this.dates[i]][this.perf_indicator[0]]);
+            this.highPrice.data.push(this.apiData[this.dates[i]][this.perf_indicator[1]]);
+            this.lowPrice.data.push(this.apiData[this.dates[i]][this.perf_indicator[2]]);
+            this.closePrice.data.push(this.apiData[this.dates[i]][this.perf_indicator[3]]);
+        }
+            for (let i:number = 0; i< this.dates.length; i++) {
+            this.lineChartLabels.push(this.dates[i])
         }
         this.buildChart()
     }
@@ -106,6 +119,11 @@ export class QuoteComponent implements OnInit {
             { data: [], label:[]}
 
         ];
+        this.lineChartData[0]["label"] = 'Open Price'
+        this.lineChartData[1]["label"] = 'High Of Day'
+        this.lineChartData[2]["label"] = 'Low of Day'
+        this.lineChartData[3]["label"] = 'Closing Price'
+
         for (let p: number = 0; p < this.openPrice.data.length; p++) {
             this.lineChartData[0]["data"].push(this.openPrice.data[p])
             this.lineChartData[1]["data"].push(this.highPrice.data[p]),
@@ -113,16 +131,16 @@ export class QuoteComponent implements OnInit {
             this.lineChartData[3]["data"].push(this.closePrice.data[p])
         }
 
-        this.lineChartData[0]["label"] = 'Open Price'
-        this.lineChartData[1]["label"] = 'High Of Day'
-        this.lineChartData[2]["label"] = 'Low of Day'
-        this.lineChartData[3]["label"] = 'Closing Price'
         }
 
 
     //Performed when the search button is clicked
     onSearch() {
 
+        while (this.lineChartLabels.length > 0) {
+            this.lineChartLabels.pop();
+            this.lineChartData.pop();
+        }
         //Formats the date to the format used on the API
         this._fromDate = formatDate(this.dateForm.controls['fromDate'].value,  'yyyy-MM-dd','en')
         this._toDate =  formatDate(this.dateForm.controls['toDate'].value,  'yyyy-MM-dd','en')
@@ -133,12 +151,12 @@ export class QuoteComponent implements OnInit {
             }
 
         }
+        this.openPrice = {data: [], label: []};
+        this.highPrice = {data: [], label: []};
+        this.lowPrice = {data: [], label: []};
+        this.closePrice = {data: [], label: []};
+
         this.callApi()
-        if (this.apiData) {
-            console.log('Has Data', this.apiData)
-        } else {
-            console.log('No Data')
-        }
 
         }
 
@@ -152,15 +170,14 @@ export class QuoteComponent implements OnInit {
             { data: [], label:[]}
 
         ];
-        if (this.apiData == true) {
-            console.log('Has Data', this.apiData)
-        } else {
-            console.log('No Data')
+        this.lineChartData[0]["label"] = 'Open Price'
+        this.lineChartData[1]["label"] = 'High Of Day'
+        this.lineChartData[2]["label"] = 'Low of Day'
+        this.lineChartData[3]["label"] = 'Closing Price'
         }
-    }
     // CODE BELOW IS USED FOR CHART STYLES
     // lineChart
-    public lineChartLabels:Array<any> = this.datesBetween;
+
     //public lineChartData:Array<any> = [{data: [2,4,5], label: 'open'}];
     public lineChartOptions:any = {
         responsive: true
