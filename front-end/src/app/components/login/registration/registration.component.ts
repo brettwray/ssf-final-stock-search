@@ -18,7 +18,7 @@ export class RegistrationComponent implements OnInit {
     "password": ''
 }
 
-
+    resData:any={};
   userRegistration = new FormGroup({
       firstName: new FormControl(''),
       lastName: new FormControl(''),
@@ -43,7 +43,11 @@ export class RegistrationComponent implements OnInit {
     console.log()
     this._user.register(this.userRegistration.value)
         .subscribe(res => {
-
+            this._user.toHomePage(this.resData)
+            {
+                sessionStorage.setItem('token', res["token"])
+                sessionStorage.setItem('userId', res["userId"])
+            }
         })
   }
 

@@ -7,11 +7,24 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class UserService {
 
-  url: string = "http://localhost:3000/api/appUsers"
-    constructor(private http : HttpClient) {}
+  registerUrl: string = "http://localhost:3000/api/appUsers"
+  loginUrl: string = "http://localhost:3000/api/appUsers/login"
+  returnUrl: string = 'quote'
+  token = sessionStorage.getItem("token")
+  userId = sessionStorage.getItem("userId")
+
+    constructor(private http : HttpClient, private router: Router) {}
 
         register(user){
-            console.log(user)
-            return this.http.post( this.url, user)
+            return this.http.post( this.registerUrl, user)
         }
-    }
+        login(data) {
+            return this.http.post( this.loginUrl, data)
+
+        }
+        toHomePage(resData) {
+        sessionStorage.setItem("token", resData["token"])
+        sessionStorage.setItem("userId", resData["id"])
+           this.router.navigate([this.returnUrl])
+        }
+}
