@@ -9,7 +9,7 @@ export class UserService {
 
   registerUrl: string = "http://localhost:3000/api/appUsers"
   loginUrl: string = "http://localhost:3000/api/appUsers/login"
-  returnUrl: string = 'quote'
+  returnUrl: string = 'dashboard'
   token = sessionStorage.getItem("token")
   userId = sessionStorage.getItem("userId")
 

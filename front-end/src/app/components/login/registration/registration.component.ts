@@ -36,8 +36,7 @@ export class RegistrationComponent implements OnInit {
       this.user.lastName = this.userRegistration.controls["lastName"].value
       this.user.email = this.userRegistration.controls["email"].value
       this.user.password = this.userRegistration.controls["password"].value
-      console.log(this.user)
-    //this.user.firstName = this.userRegistration.controls["FirstName"].value
+
     }
   onRegister() {
     console.log()

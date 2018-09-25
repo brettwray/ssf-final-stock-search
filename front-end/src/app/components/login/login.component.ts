@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     onSubmit() {
         this.data.email = this.login.controls["email"].value
         this.data.password = this.login.controls["password"].value
-        console.log(this.data)
+
 
     }
     onLogin() {
@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
         .subscribe(res => {
           this.resData = res;
           this._user.toHomePage(this.resData)
+            console.log(this.resData, 'resdata')
         })
 
     }
