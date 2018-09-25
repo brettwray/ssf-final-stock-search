@@ -1,17 +1,14 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
-import { AppComponent } from './app.component';
-import { QuoteComponent } from './components/quote/quote.component';
-import { LoginComponent } from './components/login/login.component'
-import {RegistrationComponent} from './components/login/registration/registration.component';
-
+import {HomeComponent} from './components/home/home.component';
+import {DashboardComponent} from './components/dashboard/dashboard.component';
+import { is_auth} from './components/dashboard/is-auth.module';
+import { not_auth} from './components/home/not-auth.module';
 
 export const router: Routes = [
-    { path: '', redirectTo: 'login', pathMatch: 'full' },
-    { path: 'login', component: LoginComponent },
-    { path: 'quote', component: QuoteComponent },
-    { path: 'register', component: RegistrationComponent }
+    { path: '', redirectTo: 'home', pathMatch: 'full' },
+    { path: 'home', component: HomeComponent, children:not_auth },
+    { path: 'dashboard', component: DashboardComponent, children:is_auth}
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

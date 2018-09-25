@@ -182,6 +182,7 @@ export class QuoteComponent implements OnInit {
     public lineChartOptions:any = {
         responsive: true
 
+
     };
     public lineChartColors:Array<any> = [
         { // grey

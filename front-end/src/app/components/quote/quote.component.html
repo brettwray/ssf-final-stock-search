@@ -14,6 +14,7 @@
 <div class="row">
   <div class="col-md-6">
     <div style="display: block;">
+      <div class="chartWrapper">
     <canvas id="stockChart" baseChart width="400" height="400"
                 [datasets]="lineChartData"
                 [labels]="lineChartLabels"
@@ -23,8 +24,11 @@
                 [chartType]="lineChartType"
                 (chartHover)="chartHovered($event)"
                 (chartClick)="chartClicked($event)"></canvas>
-    </div>
+      </div>
+      </div>
   </div>
+</div>
+<div class="row">
   <div class="col-md-6" style="margin-bottom: 10px">
     <table class="table table-responsive table-condensed">
       <tr>
@@ -34,6 +38,5 @@
         <td *ngFor="let label of lineChartLabels; let j=index">{{d && d.data[j]}}</td>
       </tr>
     </table>
-    <button (click)="randomize()">CLICK</button>
   </div>
 </div>

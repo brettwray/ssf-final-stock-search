@@ -1,28 +1,19 @@
 {
-  "name": "appUser",
-  "base": "User",
+  "name": "favorites",
+  "plural": "favorites",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "firstName": {
-      "type": "string",
-      "required": true
-    },
-    "lastName": {
+    "ticker": {
       "type": "string",
       "required": true
     }
   },
   "validations": [],
-  "relations": {
-    "favorites": {
-      "type": "hasMany",
-      "model": "favorites",
-      "foreignKey": "userId"
-    }
-  },
+  "relations": {},
   "acls": [
     {
       "accessType": "WRITE",

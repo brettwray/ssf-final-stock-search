@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
         "password":''
       }
 
-      login = new FormGroup( {
+        login = new FormGroup( {
           email: new FormControl(''),
           password: new FormControl('')
       });
