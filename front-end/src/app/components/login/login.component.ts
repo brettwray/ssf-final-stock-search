@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
         .subscribe(res => {
           this.resData = res;
           this._user.toHomePage(this.resData)
-            console.log(this.resData, 'resdata')
+            console.log(this.resData, 'resdata', res, 'res')
         })
 
     }

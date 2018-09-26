@@ -19,6 +19,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {DatePusherService} from './services/date-pusher.service';
 import { RegistrationComponent } from './components/login/registration/registration.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { FavoritesComponent } from './components/favorites/favorites.component';
+import { FavoriteButtonComponent } from './components/favorites/favorite-button.component';
 
 
 
@@ -32,6 +34,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     DatePickerComponent,
     RegistrationComponent,
     DashboardComponent,
+    FavoritesComponent,
+    FavoriteButtonComponent,
 
 
     

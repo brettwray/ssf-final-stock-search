@@ -24,7 +24,7 @@ export class UserService {
         }
         toHomePage(resData) {
         sessionStorage.setItem("token", resData["token"])
-        sessionStorage.setItem("userId", resData["id"])
+        sessionStorage.setItem("userId", resData["userId"])
            this.router.navigate([this.returnUrl])
         }
 }

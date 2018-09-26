@@ -5,6 +5,7 @@ import {FormControl, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
 import {formatDate} from '@angular/common';
 import {weekdaysShort} from 'moment';
+import {FavoriteService} from '../../services/favorite.service';
 
 
 @Component({
@@ -35,6 +36,7 @@ export class QuoteComponent implements OnInit {
     apiData;
     rawData;
     metaData;
+    ticker;
     openPrice = {data: [], label: []};
     highPrice = {data: [], label: []};
     lowPrice = {data: [], label: []};
@@ -42,7 +44,7 @@ export class QuoteComponent implements OnInit {
 
     public lineChartData:Array<any> = [{data: [], label: []}];
     public lineChartLabels:Array<any> = []
-    constructor(private _api: ApiService) {}
+    constructor(private _api: ApiService, private fave : FavoriteService) {}
     callApi(){
         this._api.getData(this.dateForm.controls['stockSymbol'].value)
             .subscribe(res => {
@@ -101,10 +103,10 @@ export class QuoteComponent implements OnInit {
         console.log('dates',this.dates, 'dates between', this.datesBetween, 'data dates', this.dataDates)
         //Adds API data to object for the specific data
         for (let i: number = 0; i < this.dates.length; i++) {
-            this.openPrice.data.push(this.apiData[this.dates[i]][this.perf_indicator[0]]);
-            this.highPrice.data.push(this.apiData[this.dates[i]][this.perf_indicator[1]]);
-            this.lowPrice.data.push(this.apiData[this.dates[i]][this.perf_indicator[2]]);
-            this.closePrice.data.push(this.apiData[this.dates[i]][this.perf_indicator[3]]);
+            this.openPrice.data.push(this.apiData[this.dates[i]][this.perf_indicator[0]]/1);
+            this.highPrice.data.push(this.apiData[this.dates[i]][this.perf_indicator[1]]/1);
+            this.lowPrice.data.push(this.apiData[this.dates[i]][this.perf_indicator[2]]/1);
+            this.closePrice.data.push(this.apiData[this.dates[i]][this.perf_indicator[3]]/1);
         }
             for (let i:number = 0; i< this.dates.length; i++) {
             this.lineChartLabels.push(this.dates[i])
@@ -156,6 +158,9 @@ export class QuoteComponent implements OnInit {
         this.lowPrice = {data: [], label: []};
         this.closePrice = {data: [], label: []};
 
+        //saves symbol input to variable
+        this.ticker = this.dateForm.controls['stockSymbol'].value;
+        this.fave.getSymbol(this.ticker)
         this.callApi()
 
         }
@@ -174,11 +179,9 @@ export class QuoteComponent implements OnInit {
         this.lineChartData[1]["label"] = 'High Of Day'
         this.lineChartData[2]["label"] = 'Low of Day'
         this.lineChartData[3]["label"] = 'Closing Price'
+
         }
     // CODE BELOW IS USED FOR CHART STYLES
-    // lineChart
-
-    //public lineChartData:Array<any> = [{data: [2,4,5], label: 'open'}];
     public lineChartOptions:any = {
         responsive: true
 
@@ -212,17 +215,7 @@ export class QuoteComponent implements OnInit {
     ];
     public lineChartLegend:boolean = true;
     public lineChartType:string = 'line';
-    //RANDOMIZE THE CHART
-    // public randomize():void {
-    //     let _lineChartData:Array<any> = new Array(this.lineChartData.length);
-    //     for (let i = 0; i < this.lineChartData.length; i++) {
-    //         _lineChartData[i] = {data: new Array(this.lineChartData[i].data.length), label: this.lineChartData[i].label};
-    //         for (let j = 0; j < this.lineChartData[i].data.length; j++) {
-    //             _lineChartData[i].data[j] = Math.floor((Math.random() * 100) + 1);
-    //         }
-    //     }
-    //     this.lineChartData = _lineChartData;
-    // }
+
 
     // events
     public chartClicked(e:any):void {

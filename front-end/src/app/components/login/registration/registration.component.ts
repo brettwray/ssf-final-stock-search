@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../services/user.service';
 import {FormControl, FormGroup} from '@angular/forms';
 import {HttpModule} from '@angular/http';
+import {ApiService} from '../../../services/api.service';
 
 @Component({
   selector: 'app-registration',
