@@ -1,45 +1,90 @@
-<form class="form" [formGroup]="dateForm" novalidate (ngSubmit) = "onSearch()">
-  <section class="form-block">
-    <div class="form-group">
-      <label for="symbolControl">Symbol</label>
-      <input id="symbolControl" type="text" clrInput formControlName="stockSymbol">
-      <label for="fromDateControl">From Date</label>
-      <input id="fromDateControl" type="date" clrDate formControlName="fromDate"/>
-      <label for="toDateControl">To Date</label>
-      <input id="toDateControl" type="date" clrDate formControlName="toDate"/>
-      <button type="submit"> Test </button>
+<div class="card">
+    <div class="card-header ">
+    <div class="clr-row">
+            <h4>Search For Stocks</h4>
+        </div>
     </div>
-  </section>
-</form>
-<div class="row">
-  <app-favorite-button></app-favorite-button>
+    <div class="card-block">
+    <div class="clr-row">
+        <form class="form" clrForm clrLayout="horizontal" [formGroup]="dateForm" novalidate (ngSubmit) = "onSearch()">
+            <section class="form-block">
+                <div class="form-group">
+                    <div class="clr-col">
+                        <clr-input-container>
+
+                            <input id="symbolControl" type="text" placeholder="SYMBOL" clrInput formControlName="stockSymbol">
+                        </clr-input-container>
+                    </div>
+                    <div class="clr-col">
+                        <clr-input-container>
+                            <label for="fromDateControl">From Date</label>
+                            <input id="fromDateControl" type="date" clrInput clrDate formControlName="fromDate"/>
+                        </clr-input-container>
+                    </div>
+                    <div class="clr-col">
+                        <clr-input-container>
+                            <label for="toDateControl">To Date</label>
+                            <input id="toDateControl" type="date" clrInput clrDate formControlName="toDate"/>
+                        </clr-input-container>
+                    </div>
+                    <div class="clr-col">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </div>
+
+            </section>
+        </form>
+    </div>
 </div>
-<div class="row">
-  <div class="col-md-6">
-    <div style="display: block;">
-      <div class="chartWrapper">
-    <canvas id="stockChart" baseChart width="400" height="400"
-                [datasets]="lineChartData"
-                [labels]="lineChartLabels"
-                [options]="lineChartOptions"
-                [colors]="lineChartColors"
-                [legend]="lineChartLegend"
-                [chartType]="lineChartType"
-                (chartHover)="chartHovered($event)"
-                (chartClick)="chartClicked($event)"></canvas>
-      </div>
-      </div>
-  </div>
 </div>
-<div class="row">
-  <div class="col-md-6" style="margin-bottom: 10px">
-    <table class="table table-responsive table-condensed">
-      <tr>
-        <th *ngFor="let label of lineChartLabels">{{label}}</th>
-      </tr>
-      <tr *ngFor="let d of lineChartData">
-        <td *ngFor="let label of lineChartLabels; let j=index">{{d && d.data[j]}}</td>
-      </tr>
-    </table>
-  </div>
+<div class="card">
+<div class="card-header">
+    <div class="clr-row clr-justify-content-start">
+        <div class="clr-col-10">
+            <h4>Daily Stock Prices</h4>
+        </div>
+        <div class="clr-col">
+    <app-favorite-button></app-favorite-button>
+        </div>
+    </div>
+</div>
+<div class="card-block">
+    <div class="clr-row clr-justify-content-center">
+        <div class="clr-col-10">
+            <div style="display: block;">
+                    <canvas id="stockChart" baseChart width="400" height="400"
+                            [datasets]="lineChartData"
+                            [labels]="lineChartLabels"
+                            [options]="lineChartOptions"
+                            [colors]="lineChartColors"
+                            [legend]="lineChartLegend"
+                            [chartType]="lineChartType"
+                            (chartHover)="chartHovered($event)"
+                            (chartClick)="chartClicked($event)">
+                    </canvas>
+                </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+
+<div class="card">
+    <div class="card-header">
+        <h5>Prices By Day</h5>
+    </div>
+    <div class="card-block">
+<div class="row clr-justify-content-center">
+    <div class="col-md-6" style="margin-bottom: 10px">
+        <table class="table table-responsive ">
+            <tr>
+                <th *ngFor="let label of lineChartLabels">{{label}}</th>
+            </tr>
+            <tr *ngFor="let d of lineChartData">
+                <td *ngFor="let label of lineChartLabels; let j=index">{{d && d.data[j]}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+    </div>
 </div>

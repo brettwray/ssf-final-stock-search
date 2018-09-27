@@ -1,18 +1,33 @@
 <div class="container">
-    <div class="row">
+    <div class="row clr-justify-content-center">
         <h4>Your Favorite Stocks</h4>
     </div>
     <div>
         <h6>Performed Well</h6>
-        <ul *ngFor="let stocks of isUp">
-            <li>{{stocks[0]}}{{stocks[9]}}</li>
-        </ul>
+        <div class="row clr-justify-content-center" *ngFor="let stocks of isUp">
+            <div class="card clr-col-6">
+                <div class="card-header">
+                    {{stocks[0]}}
+                </div>
+                <div class="card-block">
+                    <p class="isUp">{{stocks[9]}} </p>
+                </div>
+            </div>
+        </div>
+
     </div>
     <div>
         <h6>Performed Poorly</h6>
-        <ul *ngFor="let stock of isDown">
-            <li>{{stock[0]}}</li>
-        </ul>
+        <div class="row clr-justify-content-center" *ngFor="let stocks of isDown">
+            <div class="card clr-col-6">
+                <div class="card-header">
+                    {{stocks[0]}}
+                </div>
+                <div class="card-block">
+                    <p class="isDown">{{stocks[9]}} </p>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>

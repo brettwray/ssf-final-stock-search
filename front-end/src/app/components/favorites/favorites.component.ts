@@ -26,9 +26,9 @@ export class FavoritesComponent implements OnInit {
               for (let i: number = 0; i < this.data.length; i++) {
                   this._api.getLatest(this.data[i]["ticker"])
                       .subscribe(ret =>{
-                          console.log(ret)
+
                           let Quote = ret["Global Quote"];
-                          console.log(Quote["09. change"],'checking quote')
+
                           if (Math.sign(Quote["09. change"]) != 1) {
                               this.isDown.push(Array.from(Object.values(Quote)))
                           } else {
@@ -37,7 +37,7 @@ export class FavoritesComponent implements OnInit {
                       })
               }
           })
-console.log('isup', this.isUp, this.isDown,'down')
+
 
   }
 

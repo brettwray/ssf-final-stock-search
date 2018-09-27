@@ -1,16 +1,16 @@
-<div class="main-container">
-    <header class="header header-6">
+<clr-main-container>
+    <clr-header class="header-nav" [clr-nav-level]="1">
         <div class="branding">
             <clr-icon shape="piggy-bank" size="36" class="is-inverse"></clr-icon>
             <span class="title">GitStocks.io</span>
         </div>
-    </header>
+    </clr-header>
     <div class="content-container">
         <div class="content-area">
             <router-outlet></router-outlet>
         </div>
-        <nav class="sidenav">
+        <nav class="sidenav" [clr-nav-level]="2">
             <app-favorites></app-favorites>
         </nav>
     </div>
-</div>
+</clr-main-container>

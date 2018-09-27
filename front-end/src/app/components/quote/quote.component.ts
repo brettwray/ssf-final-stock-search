@@ -4,8 +4,9 @@ import { Chart } from 'chart.js'
 import {FormControl, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
 import {formatDate} from '@angular/common';
-import {weekdaysShort} from 'moment';
+import { weekdaysShort } from 'moment';
 import {FavoriteService} from '../../services/favorite.service';
+import {AuthService} from '../../services/auth.service';
 
 
 @Component({
@@ -35,7 +36,7 @@ export class QuoteComponent implements OnInit {
     ];
     apiData;
     rawData;
-    metaData;
+    metaData = [];
     ticker;
     openPrice = {data: [], label: []};
     highPrice = {data: [], label: []};
@@ -44,13 +45,14 @@ export class QuoteComponent implements OnInit {
 
     public lineChartData:Array<any> = [{data: [], label: []}];
     public lineChartLabels:Array<any> = []
-    constructor(private _api: ApiService, private fave : FavoriteService) {}
+    constructor(private _api: ApiService, private fave : FavoriteService, private auth: AuthService) {}
     callApi(){
         this._api.getData(this.dateForm.controls['stockSymbol'].value)
             .subscribe(res => {
                 this.apiData = res["Time Series (Daily)"];
                 this.rawData = res;
-                this.metaData = res["Meta Data"]
+                this.metaData.push(Array.from(Object.values(res["Meta Data"])))
+                console.log('this.metaData', this.metaData)
                 //Gets All Dates Available From API Return
                 this.dataDates  = [];
 
@@ -161,12 +163,14 @@ export class QuoteComponent implements OnInit {
         //saves symbol input to variable
         this.ticker = this.dateForm.controls['stockSymbol'].value;
         this.fave.getSymbol(this.ticker)
+        console.log(this.metaData)
         this.callApi()
 
         }
 
 
     ngOnInit(){
+
         //Initializes Line Chart Data With No Data so the entire array is overwritten once the dates and symbol are entered
         this.lineChartData = [
             { data: [], label:[]},
